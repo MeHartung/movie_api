@@ -1,17 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Movie API Documentation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
 </head>
 
 <body>
-    <h1>Movie API</h1>
-    <p>This API allows users to retrieve information about movies.</p>
-    <p>Use this API to get detailed information about your favorite movies.</p>
-    <p>Future updates will include endpoints for adding new movies, updating existing ones.</p>
+
+    <h1>API Documentation</h1>
+
+    <!-- Movies Endpoints -->
+    <div class="endpoint">
+        <h2>GET /movies</h2>
+        <p>Returns a list of all movies.</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>URL:</strong> <code>/movies</code></p>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+[
+    {
+        "Title": "The Shawshank Redemption",
+        "Description": "Two imprisoned men bond...",
+        "Genre": {
+            "Name": "Drama",
+            "Description": "A genre that focuses on..."
+        },
+        "Director": {
+            "Name": "Frank Darabont",
+            "Bio": "Frank Darabont is an..."
+        },
+        "ImageURL": "https://...",
+        "Featured": true
+    },
+    ...
+]
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /movies/:title</h2>
+        <p>Returns details of a specific movie by title.</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>URL:</strong> <code>/movies/:title</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+title (string): The title of the movie.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+{
+    "Title": "The Shawshank Redemption",
+    "Description": "Two imprisoned men bond...",
+    "Genre": {
+        "Name": "Drama",
+        "Description": "A genre that focuses on..."
+    },
+    "Director": {
+        "Name": "Frank Darabont",
+        "Bio": "Frank Darabont is an..."
+    },
+    "ImageURL": "https://...",
+    "Featured": true
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /movies/genre/:genreName</h2>
+        <p>Returns details of movies by genre name.</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>URL:</strong> <code>/movies/genre/:genreName</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+genreName (string): The name of the genre.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+{
+    "Name": "Drama",
+    "Description": "A genre that focuses on..."
+}
+        </pre>
+    </div>
+
+    <!-- Users Endpoints -->
+    <div class="endpoint">
+        <h2>POST /users</h2>
+        <p>Creates a new user.</p>
+        <p><strong>Method:</strong> POST</p>
+        <p><strong>URL:</strong> <code>/users</code></p>
+        <p><strong>Request Body:</strong></p>
+        <pre>
+{
+    "name": "Kim"
+}
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+{
+    "id": "1",
+    "name": "Kim",
+    "favoriteMovies": []
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>PUT /users/:id</h2>
+        <p>Updates a user's name by their ID.</p>
+        <p><strong>Method:</strong> PUT</p>
+        <p><strong>URL:</strong> <code>/users/:id</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+id (string): The ID of the user.
+        </pre>
+        <p><strong>Request Body:</strong></p>
+        <pre>
+{
+    "name": "Joe"
+}
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+{
+    "id": "1",
+    "name": "Joe",
+    "favoriteMovies": ["The Godfather"]
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>PUT /users/:id/:movieTitle</h2>
+        <p>Adds a movie to a user's favorite list.</p>
+        <p><strong>Method:</strong> PUT</p>
+        <p><strong>URL:</strong> <code>/users/:id/:movieTitle</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+id (string): The ID of the user.
+movieTitle (string): The title of the movie to be added.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+"The Godfather has been added to user 1's favorite movies list."
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>DELETE /users/:id/:movieTitle</h2>
+        <p>Removes a movie from a user's favorite list.</p>
+        <p><strong>Method:</strong> DELETE</p>
+        <p><strong>URL:</strong> <code>/users/:id/:movieTitle</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+id (string): The ID of the user.
+movieTitle (string): The title of the movie to be removed.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+"The Godfather has been removed from user 1's favorite movies list."
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>DELETE /users/:id</h2>
+        <p>Deletes a user by their ID.</p>
+        <p><strong>Method:</strong> DELETE</p>
+        <p><strong>URL:</strong> <code>/users/:id</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+id (string): The ID of the user.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+"user 1 has been deleted."
+        </pre>
+    </div>
+
 </body>
 
 </html>
