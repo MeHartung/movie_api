@@ -21,6 +21,7 @@
         <pre>
 [
     {
+        "_id": "64f62e5f2b5e6d62e3b2f142",
         "Title": "The Shawshank Redemption",
         "Description": "Two imprisoned men bond...",
         "Genre": {
@@ -30,6 +31,7 @@
         "Director": {
             "Name": "Frank Darabont",
             "Bio": "Frank Darabont is an..."
+            "Birth": "1959-01-28"
         },
         "ImageURL": "https://...",
         "Featured": true
@@ -51,6 +53,7 @@ title (string): The title of the movie.
         <p><strong>Response Format:</strong></p>
         <pre>
 {
+    "_id": "64f62e5f2b5e6d62e3b2f142",
     "Title": "The Shawshank Redemption",
     "Description": "Two imprisoned men bond...",
     "Genre": {
@@ -59,7 +62,8 @@ title (string): The title of the movie.
     },
     "Director": {
         "Name": "Frank Darabont",
-        "Bio": "Frank Darabont is an..."
+        "Bio": "Frank Darabont is an...",
+        "Birth": "1959-01-28"
     },
     "ImageURL": "https://...",
     "Featured": true
@@ -69,7 +73,7 @@ title (string): The title of the movie.
 
     <div class="endpoint">
         <h2>GET /movies/genre/:genreName</h2>
-        <p>Returns details of movies by genre name.</p>
+        <p>Returns details of a genre by name.</p>
         <p><strong>Method:</strong> GET</p>
         <p><strong>URL:</strong> <code>/movies/genre/:genreName</code></p>
         <p><strong>Parameters:</strong></p>
@@ -85,6 +89,26 @@ genreName (string): The name of the genre.
         </pre>
     </div>
 
+    <div class="endpoint">
+        <h2>GET /movies/directors/:directorName</h2>
+        <p>Returns details of a director by name.</p>
+        <p><strong>Method:</strong> GET</p>
+        <p><strong>URL:</strong> <code>/movies/directors/:directorName</code></p>
+        <p><strong>Parameters:</strong></p>
+        <pre>
+directorName (string): The name of the director.
+        </pre>
+        <p><strong>Response Format:</strong></p>
+        <pre>
+{
+    "Name": "Frank Darabont",
+    "Bio": "Frank Darabont is an...",
+    "Birth": "1959-01-28",
+    "Death": null
+}
+        </pre>
+    </div>
+
     <!-- Users Endpoints -->
     <div class="endpoint">
         <h2>POST /users</h2>
@@ -94,88 +118,110 @@ genreName (string): The name of the genre.
         <p><strong>Request Body:</strong></p>
         <pre>
 {
-    "name": "Kim"
+    "Username": "Kim",
+    "Password": "password123",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01"
 }
         </pre>
         <p><strong>Response Format:</strong></p>
         <pre>
 {
-    "id": "1",
-    "name": "Kim",
-    "favoriteMovies": []
+    "_id": "64f62e5f2b5e6d62e3b2f142",
+    "Username": "Kim",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01",
+    "FavoriteMovies": []
 }
         </pre>
     </div>
 
     <div class="endpoint">
-        <h2>PUT /users/:id</h2>
-        <p>Updates a user's name by their ID.</p>
+        <h2>PUT /users/:Username</h2>
+        <p>Updates a user's info by their Username.</p>
         <p><strong>Method:</strong> PUT</p>
-        <p><strong>URL:</strong> <code>/users/:id</code></p>
+        <p><strong>URL:</strong> <code>/users/:Username</code></p>
         <p><strong>Parameters:</strong></p>
         <pre>
-id (string): The ID of the user.
+Username (string): The Username of the user.
         </pre>
         <p><strong>Request Body:</strong></p>
         <pre>
 {
-    "name": "Joe"
+    "Username": "Kim",
+    "Password": "newpassword",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01"
 }
         </pre>
         <p><strong>Response Format:</strong></p>
         <pre>
 {
-    "id": "1",
-    "name": "Joe",
-    "favoriteMovies": ["The Godfather"]
+    "_id": "64f62e5f2b5e6d62e3b2f142",
+    "Username": "Kim",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01",
+    "FavoriteMovies": []
 }
         </pre>
     </div>
 
     <div class="endpoint">
-        <h2>PUT /users/:id/:movieTitle</h2>
+        <h2>PUT /users/:Username/movies/:MovieID</h2>
         <p>Adds a movie to a user's favorite list.</p>
         <p><strong>Method:</strong> PUT</p>
-        <p><strong>URL:</strong> <code>/users/:id/:movieTitle</code></p>
+        <p><strong>URL:</strong> <code>/users/:Username/movies/:MovieID</code></p>
         <p><strong>Parameters:</strong></p>
         <pre>
-id (string): The ID of the user.
-movieTitle (string): The title of the movie to be added.
+Username (string): The Username of the user.
+MovieID (string): The ID of the movie to be added.
         </pre>
         <p><strong>Response Format:</strong></p>
         <pre>
-"The Godfather has been added to user 1's favorite movies list."
+{
+    "_id": "64f62e5f2b5e6d62e3b2f142",
+    "Username": "Kim",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01",
+    "FavoriteMovies": ["64f62e5f2b5e6d62e3b2f143"]
+}
         </pre>
     </div>
 
     <div class="endpoint">
-        <h2>DELETE /users/:id/:movieTitle</h2>
+        <h2>DELETE /users/:Username/movies/:MovieID</h2>
         <p>Removes a movie from a user's favorite list.</p>
         <p><strong>Method:</strong> DELETE</p>
-        <p><strong>URL:</strong> <code>/users/:id/:movieTitle</code></p>
+        <p><strong>URL:</strong> <code>/users/:Username/movies/:MovieID</code></p>
         <p><strong>Parameters:</strong></p>
         <pre>
-id (string): The ID of the user.
-movieTitle (string): The title of the movie to be removed.
+Username (string): The Username of the user.
+MovieID (string): The ID of the movie to be removed.
         </pre>
         <p><strong>Response Format:</strong></p>
         <pre>
-"The Godfather has been removed from user 1's favorite movies list."
+{
+    "_id": "64f62e5f2b5e6d62e3b2f142",
+    "Username": "Kim",
+    "Email": "kim@example.com",
+    "Birthday": "1990-01-01",
+    "FavoriteMovies": []
+}
         </pre>
     </div>
 
     <div class="endpoint">
-        <h2>DELETE /users/:id</h2>
-        <p>Deletes a user by their ID.</p>
+        <h2>DELETE /users/:Username</h2>
+        <p>Deletes a user by their Username.</p>
         <p><strong>Method:</strong> DELETE</p>
-        <p><strong>URL:</strong> <code>/users/:id</code></p>
+        <p><strong>URL:</strong> <code>/users/:Username</code></p>
         <p><strong>Parameters:</strong></p>
         <pre>
-id (string): The ID of the user.
+Username (string): The Username of the user.
         </pre>
         <p><strong>Response Format:</strong></p>
         <pre>
-"user 1 has been deleted."
+"User 'Kim' has been deleted."
         </pre>
     </div>
 
