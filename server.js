@@ -254,6 +254,10 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
     }
 });
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the Movie API!');
+});
+
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
