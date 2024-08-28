@@ -18,8 +18,11 @@ const Users = Models.User;
 const Genres = Models.Genre;
 const Director = Models.Director;
 
-mongoose.connect('mongodb://localhost:27017/myMovieDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/myMovieDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
+//mongoose.connect('mongodb+srv://myFlixDbAdmin:Berlin2-@cluster0.mhuei.mongodb.net/myFlixDb?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.post('/users',
     // Validation logic here for request
