@@ -1,3 +1,5 @@
+"start": "node index.js"
+
 {
   "name": "movie_api",
   "version": "1.0.0",
