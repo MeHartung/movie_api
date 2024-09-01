@@ -75,6 +75,7 @@ app.post('/users',
 
 
 // Update user info by username
+
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     // Check if the authenticated user is the same as the user to be updated
     if (req.user.Username !== req.params.Username) {
@@ -82,16 +83,20 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
     }
 
     try {
+        let updateFields = {
+            Username: req.body.Username,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+        };
+
+        // Only hash the password 
+        if (req.body.Password) {
+            updateFields.Password = Users.hashPassword(req.body.Password);
+        }
+
         const updatedUser = await Users.findOneAndUpdate(
             { Username: req.params.Username },
-            {
-                $set: {
-                    Username: req.body.Username,
-                    Password: req.body.Password,
-                    Email: req.body.Email,
-                    Birthday: req.body.Birthday
-                }
-            },
+            { $set: updateFields },
             { new: true }
         );
 
@@ -105,6 +110,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
         res.status(500).send('Error: ' + err);
     }
 });
+
 
 // ADD a movie to a user's list of favorites
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
