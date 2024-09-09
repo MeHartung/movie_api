@@ -193,7 +193,8 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
             console.error(error);
             res.status(500).send('Error: ' + error);
         });
-});*/
+});
+*/
 
 app.get('/movies', async (req, res) => {
     await Movies.find()
@@ -205,6 +206,8 @@ app.get('/movies', async (req, res) => {
             res.status(500).send('Error: ' + error);
         });
 });
+
+
 
 
 // Get a user by username
