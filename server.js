@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+require('dotenv').config();
+console.log('Database URI:', process.env.CONNECTION_URI);
+
+
 
 const cors = require('cors');
 app.use(cors());
@@ -9,8 +13,6 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 const { check, validationResult } = require('express-validator');
-
-const mongoose = require('mongoose');
 const Models = require('./models.js');
 
 const Movies = Models.Movie;
@@ -22,7 +24,12 @@ const Director = Models.Director;
 
 //mongoose.connect('mongodb+srv://myFlixDbAdmin:Berlin2-@cluster0.mhuei.mongodb.net/myFlixDb?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true });
 
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Database connected successfully'))
+    .catch((error) => console.log('Database connection error:', error));
+
 
 app.post('/users',
     // Validation logic here for request
