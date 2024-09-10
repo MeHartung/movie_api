@@ -28,10 +28,11 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// Database connection
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.connect(process.env.CONNECTION_URI)
     .then(() => console.log('Database connected successfully'))
     .catch((error) => console.log('Database connection error:', error));
+
 
 // Routes
 app.post('/users', [
