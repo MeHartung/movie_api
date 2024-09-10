@@ -177,7 +177,6 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
         res.status(500).send('Error: ' + error);
     }
 });
-*/
 
 app.get('/movies', async (req, res) => {
     try {
