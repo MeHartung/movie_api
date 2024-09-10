@@ -191,7 +191,7 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 // READ 
 // Get all movies
-/* app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     await Movies.find()
         .then((movies) => {
             res.status(201).json(movies);
@@ -201,8 +201,8 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
             res.status(500).send('Error: ' + error);
         });
 });
-*/
 
+/*
 app.get('/movies', async (req, res) => {
     await Movies.find()
         .then((movies) => {
@@ -213,7 +213,7 @@ app.get('/movies', async (req, res) => {
             res.status(500).send('Error: ' + error);
         });
 });
-
+*/
 
 
 
