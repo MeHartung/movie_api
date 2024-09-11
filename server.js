@@ -13,7 +13,6 @@ const Users = Models.User;
 const Genres = Models.Genre;
 const Directors = Models.Director;
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const allowedOrigins = ['http://localhost:1234'];
@@ -24,7 +23,8 @@ app.use(cors({
         } else {
             callback(new Error('Not allowed by CORS'), false);
         }
-    }
+    },
+    credentials: true
 }));
 
 app.use(bodyParser.json());
@@ -66,6 +66,33 @@ app.post('/users', [
     }
 });
 
+app.post('/login', async (req, res) => {
+    try {
+        const user = await Users.findOne({ Username: req.body.Username });
+
+        if (!user) {
+            return res.status(401).send('User not found');
+        }
+
+        const isMatch = bcrypt.compareSync(req.body.Password, user.Password);
+
+        if (!isMatch) {
+            return res.status(401).send('Password is incorrect');
+        }
+
+        const token = jwt.sign(
+            { Username: user.Username, _id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error: ' + error.message);
+    }
+});
+
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
         return res.status(403).send('Permission denied');
@@ -73,7 +100,6 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
 
     try {
         let updateFields = {
-            Username: req.body.Username,
             Email: req.body.Email,
             Birthday: req.body.Birthday
         };
@@ -233,13 +259,6 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
     }
 });
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the Movie API!');
+app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
 });
-
-// Start the server
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0', () => {
-    console.log('Listening on Port ' + port);
-});
-

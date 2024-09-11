@@ -1,56 +1,43 @@
-const passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
-    Models = require('./models.js'),
-    passportJWT = require('passport-jwt'),
-    bcrypt = require('bcrypt');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
 
-let Users = Models.User,
-    JWTStrategy = passportJWT.Strategy,
-    ExtractJWT = passportJWT.ExtractJwt;
-
-passport.use(
-    new LocalStrategy(
-        {
-            usernameField: 'Username',
-            passwordField: 'Password',
-        },
-        async (username, password, callback) => {
-            console.log(`${username} ${password}`);
-            await Users.findOne({ Username: username })
-                .then((user) => {
-                    if (!user) {
-                        console.log('incorrect username');
-                        return callback(null, false, {
-                            message: 'Incorrect username or password.',
-                        });
-                    }
-                    // Compare stored hashed password with the provided plain text password
-                    if (!bcrypt.compareSync(password, user.Password)) {
-                        console.log('incorrect password');
-                        return callback(null, false, { message: 'Incorrect password.' });
-                    }
-                    console.log('finished');
-                    return callback(null, user);
-                })
-                .catch((error) => {
-                    if (error) {
-                        console.log(error);
-                        return callback(error);
-                    }
-                });
+passport.use(new LocalStrategy(
+    {
+        usernameField: 'Username',
+        passwordField: 'Password'
+    },
+    async (username, password, done) => {
+        try {
+            const user = await User.findOne({ Username: username });
+            if (!user) {
+                return done(null, false, { message: 'Incorrect username.' });
+            }
+            if (!bcrypt.compareSync(password, user.Password)) {
+                return done(null, false, { message: 'Incorrect password.' });
+            }
+            return done(null, user);
+        } catch (err) {
+            return done(err);
         }
-    )
-);
+    }
+));
 
-passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'your_jwt_secret'
-}, async (jwtPayload, callback) => {
-    return await Users.findById(jwtPayload._id)
-        .then((user) => {
-            return callback(null, user);
-        })
-        .catch((error) => {
-            return callback(error);
-        });
+passport.use(new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET
+}, async (jwt_payload, done) => {
+    try {
+        const user = await User.findById(jwt_payload._id);
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    } catch (err) {
+        return done(err, false);
+    }
 }));
