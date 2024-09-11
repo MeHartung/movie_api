@@ -16,11 +16,10 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-
 const allowedOrigins = ['http://localhost:1234'];
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'), false);
@@ -30,11 +29,9 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Database connected successfully'))
-    .catch((error) => console.log('Database connection error:', error));
-
+    .catch((error) => console.error('Database connection error:', error));
 
 app.post('/users', [
     check('Username', 'Username is required').isLength({ min: 5 }),
@@ -65,14 +62,13 @@ app.post('/users', [
         res.status(201).json(user);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).send('Error: ' + error.message);
     }
 });
 
-
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
-        return res.status(400).send('Permission denied');
+        return res.status(403).send('Permission denied');
     }
 
     try {
@@ -83,7 +79,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
         };
 
         if (req.body.Password) {
-            updateFields.Password = Users.hashPassword(req.body.Password);
+            updateFields.Password = bcrypt.hashSync(req.body.Password, 10);
         }
 
         const updatedUser = await Users.findOneAndUpdate(
@@ -99,14 +95,13 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Add movie to favorites
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
-        return res.status(400).send('Permission denied');
+        return res.status(403).send('Permission denied');
     }
 
     try {
@@ -123,14 +118,13 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Remove movie from favorites
 app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
-        return res.status(400).send('Permission denied');
+        return res.status(403).send('Permission denied');
     }
 
     try {
@@ -147,14 +141,13 @@ app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { se
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Delete user
 app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
-        return res.status(400).send('Permission denied');
+        return res.status(403).send('Permission denied');
     }
 
     try {
@@ -166,25 +159,23 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Get all movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
         const movies = await Movies.find();
         res.status(200).json(movies);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).send('Error: ' + error.message);
     }
 });
 
-// Get user details
 app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
-        return res.status(400).send('Permission denied');
+        return res.status(403).send('Permission denied');
     }
 
     try {
@@ -196,11 +187,10 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), as
         }
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error: ' + error);
+        res.status(500).send('Error: ' + error.message);
     }
 });
 
-// Get movie by title
 app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
         const movie = await Movies.findOne({ Title: req.params.title });
@@ -211,11 +201,10 @@ app.get('/movies/:title', passport.authenticate('jwt', { session: false }), asyn
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Get genre by name
 app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
         const genre = await Genres.findOne({ Name: req.params.genreName });
@@ -226,11 +215,10 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: fals
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Get director by name
 app.get('/movies/directors/:directorName', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
         const director = await Directors.findOne({ Name: req.params.directorName });
@@ -241,11 +229,10 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error: ' + err);
+        res.status(500).send('Error: ' + err.message);
     }
 });
 
-// Welcome route
 app.get('/', (req, res) => {
     res.send('Welcome to the Movie API!');
 });
