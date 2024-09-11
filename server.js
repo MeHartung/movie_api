@@ -102,6 +102,31 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
     }
 });
 
+
+
+app.post('/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (error, user, info) => {
+        if (error || !user) {
+            return res.status(400).json({
+                message: 'Something is not right',
+                user: user
+            });
+        }
+
+        req.login(user, { session: false }, (err) => {
+            if (err) {
+                res.send(err);
+            }
+
+
+            const token = jwt.sign({ _id: user._id }, 'your_jwt_secret');
+            return res.json({ user, token });
+        });
+    })(req, res);
+});
+
+
+
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
         return res.status(400).send('Permission denied');
