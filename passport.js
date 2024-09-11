@@ -1,7 +1,8 @@
 const passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     Models = require('./models.js'),
-    passportJWT = require('passport-jwt');
+    passportJWT = require('passport-jwt'),
+    bcrypt = require('bcrypt');
 
 let Users = Models.User,
     JWTStrategy = passportJWT.Strategy,
@@ -23,7 +24,8 @@ passport.use(
                             message: 'Incorrect username or password.',
                         });
                     }
-                    if (!user.validatePassword(password)) {
+                    // Compare stored hashed password with the provided plain text password
+                    if (!bcrypt.compareSync(password, user.Password)) {
                         console.log('incorrect password');
                         return callback(null, false, { message: 'Incorrect password.' });
                     }
@@ -35,11 +37,10 @@ passport.use(
                         console.log(error);
                         return callback(error);
                     }
-                })
+                });
         }
     )
 );
-
 
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
@@ -50,6 +51,6 @@ passport.use(new JWTStrategy({
             return callback(null, user);
         })
         .catch((error) => {
-            return callback(error)
+            return callback(error);
         });
 }));
