@@ -178,15 +178,15 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
     }
 });
 
-app.get('/movies', async (req, res) => {
-    try {
-        const movies = await Movies.find();
-        res.status(200).json(movies);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
-    }
-});
+// app.get('/movies', async (req, res) => {
+//     try {
+//         const movies = await Movies.find();
+//         res.status(200).json(movies);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Error: ' + error);
+//     }
+// });
 
 
 app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
