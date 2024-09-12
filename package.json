@@ -25,6 +25,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "parcel": "^2.12.0"
   }
 }
