@@ -16,6 +16,8 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+app.use(passport.initialize());
+
 const allowedOrigins = ['http://localhost:1234'];
 app.use(cors({
     origin: (origin, callback) => {
@@ -65,6 +67,20 @@ app.post('/users', [
         res.status(500).send('Error: ' + error.message);
     }
 });
+
+app.post('/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        if (!user) {
+            return res.status(401).json({ message: info.message });
+        }
+        const token = jwt.sign(user.toJSON(), 'your_jwt_secret', { expiresIn: '1h' });
+        res.json({ token });
+    })(req, res);
+});
+
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
