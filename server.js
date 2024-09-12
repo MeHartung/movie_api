@@ -13,6 +13,7 @@ const Users = Models.User;
 const Genres = Models.Genre;
 const Directors = Models.Director;
 const mongoose = require('mongoose');
+require('./auth')(app);
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -35,7 +36,6 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
     .then(() => console.log('Database connected successfully'))
     .catch((error) => console.error('Database connection error:', error));
 
-require('./auth')(app);
 
 app.post('/users', [
     check('Username', 'Username is required').isLength({ min: 5 }),
