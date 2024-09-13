@@ -170,14 +170,16 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        // populate() to get the director and genre name instead of just the ID
-        const movies = await Movies.find().populate('Director').populate('Genre');
+        const movies = await Movies.find()
+            .populate('Director', 'Name')
+            .populate('Genre', 'Name');
         res.status(200).json(movies);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error: ' + error.message);
     }
 });
+
 
 
 app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
