@@ -170,7 +170,7 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const movies = await Movies.find().populate('Genre').populate('Director');
+        const movies = await Movies.find();
         res.status(200).json(movies);
     } catch (error) {
         console.error(error);
@@ -198,7 +198,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), as
 
 app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const movie = await Movies.findOne({ Title: req.params.title }).populate('Genre').populate('Director');
+        const movie = await Movies.findOne({ Title: req.params.title });
         if (movie) {
             res.status(200).json(movie);
         } else {
