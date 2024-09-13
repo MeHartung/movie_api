@@ -26,7 +26,6 @@ const movieSchema = mongoose.Schema({
     Featured: Boolean
 });
 
-const Movie = mongoose.model('Movie', movieSchema);
 
 module.exports.Movie = Movie;
 
