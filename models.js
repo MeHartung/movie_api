@@ -16,6 +16,7 @@ const directorSchema = mongoose.Schema({
     Death: Date
 });
 
+// Movie Schema
 const movieSchema = mongoose.Schema({
     Title: { type: String, required: true },
     Description: { type: String, required: true },
@@ -24,10 +25,6 @@ const movieSchema = mongoose.Schema({
     ImagePath: String,
     Featured: Boolean
 });
-
-
-
-module.exports.Movie = Movie;
 
 // User Schema
 const userSchema = mongoose.Schema({
@@ -46,10 +43,11 @@ userSchema.methods.validatePassword = function (password) {
     return bcrypt.compareSync(password, this.Password);
 };
 
-
+// Create Models
 const Genre = mongoose.model('Genre', genreSchema);
 const Director = mongoose.model('Director', directorSchema);
 const Movie = mongoose.model('Movie', movieSchema);
 const User = mongoose.model('User', userSchema);
 
+// Export Models
 module.exports = { Genre, Director, Movie, User };
