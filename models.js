@@ -16,7 +16,6 @@ const directorSchema = mongoose.Schema({
     Death: Date
 });
 
-// Movie Schema
 const movieSchema = mongoose.Schema({
     Title: { type: String, required: true },
     Description: { type: String, required: true },
@@ -25,6 +24,7 @@ const movieSchema = mongoose.Schema({
     ImagePath: String,
     Featured: Boolean
 });
+
 
 
 module.exports.Movie = Movie;
