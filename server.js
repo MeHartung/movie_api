@@ -171,14 +171,16 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
         const movies = await Movies.find()
-            .populate('Director', 'Name')
-            .populate('Genre', 'Name');
+            .populate('Genre', 'Name Description')
+            .populate('Director', 'Name Bio Birth Death');
+
         res.status(200).json(movies);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error: ' + error.message);
     }
 });
+
 
 
 
@@ -246,6 +248,35 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
 app.get('/', (req, res) => {
     res.send('Welcome to the Movie API!');
 });
+
+app.get('/genres/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    try {
+        const genre = await Genres.findById(req.params.id);
+        if (genre) {
+            res.status(200).json(genre);
+        } else {
+            res.status(404).send('Genre not found');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err.message);
+    }
+});
+
+app.get('/directors/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    try {
+        const director = await Directors.findById(req.params.id);
+        if (director) {
+            res.status(200).json(director);
+        } else {
+            res.status(404).send('Director not found');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err.message);
+    }
+});
+
 
 // Start the server
 const port = process.env.PORT || 8080;
