@@ -249,33 +249,41 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Movie API!');
 });
 
-app.get('/genres/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/directors/:id', async (req, res) => {
     try {
-        const genre = await Genres.findById(req.params.id);
-        if (genre) {
-            res.status(200).json(genre);
-        } else {
-            res.status(404).send('Genre not found');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error: ' + err.message);
-    }
-});
+        // Log the request for debugging
+        console.log('Request Params:', req.params);
 
-app.get('/directors/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    try {
         const director = await Directors.findById(req.params.id);
         if (director) {
             res.status(200).json(director);
         } else {
-            res.status(404).send('Director not found');
+            res.status(404).send('No such director');
         }
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching director:', err);
         res.status(500).send('Error: ' + err.message);
     }
 });
+
+app.get('/genres/:id', async (req, res) => {
+    try {
+        // Log the request for debugging
+        console.log('Request Params:', req.params);
+
+        const genre = await Genres.findById(req.params.id);
+        if (genre) {
+            res.status(200).json(genre);
+        } else {
+            res.status(404).send('No such genre');
+        }
+    } catch (err) {
+        console.error('Error fetching genre:', err);
+        res.status(500).send('Error: ' + err.message);
+    }
+});
+
+
 
 
 // Start the server
