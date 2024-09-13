@@ -170,13 +170,15 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const movies = await Movies.find();
+        // populate() to get the director and genre name instead of just the ID
+        const movies = await Movies.find().populate('Director').populate('Genre');
         res.status(200).json(movies);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error: ' + error.message);
     }
 });
+
 
 app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.user.Username !== req.params.Username) {
@@ -198,7 +200,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), as
 
 app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const movie = await Movies.findOne({ Title: req.params.title });
+        const movie = await Movies.findOne({ Title: req.params.title }).populate('Director').populate('Genre');
         if (movie) {
             res.status(200).json(movie);
         } else {
@@ -209,6 +211,7 @@ app.get('/movies/:title', passport.authenticate('jwt', { session: false }), asyn
         res.status(500).send('Error: ' + err.message);
     }
 });
+
 
 app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
