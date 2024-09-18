@@ -18,7 +18,7 @@ const bcrypt = require('bcrypt');
 
 app.use(passport.initialize());
 
-const allowedOrigins = ['http://localhost:1234'];
+const allowedOrigins = ['http://localhost:1234', 'https://my-flix-hartung.netlify.app'];
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
